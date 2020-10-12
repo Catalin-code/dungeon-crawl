@@ -1,14 +1,17 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.actors.Skeleton;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -53,19 +56,45 @@ public class Main extends Application {
     private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case UP:
+                if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).getActor() != null) {
+                    map.getPlayer().move(0,1);
+                }
                 map.getPlayer().move(0, -1);
+
+
+                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
+                    map.getPlayer().move(0, 1);
+                }
                 refresh();
                 break;
             case DOWN:
+                if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, 1).getActor() != null) {
+                    map.getPlayer().move(0,-1);
+                }
                 map.getPlayer().move(0, 1);
+                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
+                    map.getPlayer().move(0, -1);
+                }
                 refresh();
                 break;
             case LEFT:
+                if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(-1, 0).getActor() != null) {
+                    map.getPlayer().move(1,0);
+                }
                 map.getPlayer().move(-1, 0);
+                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
+                    map.getPlayer().move(1, 0);
+                }
                 refresh();
                 break;
             case RIGHT:
+                if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(1, 0).getActor() != null) {
+                    map.getPlayer().move(-1,0);
+                }
                 map.getPlayer().move(1,0);
+                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
+                    map.getPlayer().move(-1, 0);
+                }
                 refresh();
                 break;
         }
