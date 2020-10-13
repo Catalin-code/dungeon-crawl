@@ -10,6 +10,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -25,6 +26,8 @@ public class Main extends Application {
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
+    Label inventoryLabel = new Label();
+    Button pickButton = new Button("Pick Up Item");
 
     public static void main(String[] args) {
         launch(args);
@@ -35,9 +38,15 @@ public class Main extends Application {
         GridPane ui = new GridPane();
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
+        pickButton.setVisible(false);
 
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
+
+        ui.add(new Label("Inventory: "), 0, 50);
+        ui.add(inventoryLabel, 50, 50);
+
+        ui.add(pickButton,0,150);
 
         BorderPane borderPane = new BorderPane();
 
@@ -47,10 +56,25 @@ public class Main extends Application {
         Scene scene = new Scene(borderPane);
         primaryStage.setScene(scene);
         refresh();
-        scene.setOnKeyPressed(this::onKeyPressed);
+        scene.addEventFilter(KeyEvent.KEY_PRESSED,this::onKeyPressed);
 
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
+    }
+
+    private void itemDetection() {
+        if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getItem() != null) {
+            pickButton.setVisible(true);
+            refresh();
+        } else {
+            pickButton.setVisible(false);
+        }
+        pickButton.setOnAction(e -> {
+            pickButton.setVisible(false);
+            map.getPlayer().addToInventory(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getItem().getName());
+            map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).setItem(null);
+            refresh();
+        });
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
@@ -59,7 +83,9 @@ public class Main extends Application {
                 if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).getActor() != null) {
                     map.getPlayer().move(0,1);
                 }
+
                 map.getPlayer().move(0, -1);
+                itemDetection();
 
 
                 if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
@@ -72,6 +98,9 @@ public class Main extends Application {
                     map.getPlayer().move(0,-1);
                 }
                 map.getPlayer().move(0, 1);
+
+                itemDetection();
+
                 if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
                     map.getPlayer().move(0, -1);
                 }
@@ -82,6 +111,8 @@ public class Main extends Application {
                     map.getPlayer().move(1,0);
                 }
                 map.getPlayer().move(-1, 0);
+                itemDetection();
+
                 if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
                     map.getPlayer().move(1, 0);
                 }
@@ -92,6 +123,9 @@ public class Main extends Application {
                     map.getPlayer().move(-1,0);
                 }
                 map.getPlayer().move(1,0);
+
+                itemDetection();
+
                 if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
                     map.getPlayer().move(-1, 0);
                 }
@@ -106,13 +140,21 @@ public class Main extends Application {
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 Cell cell = map.getCell(x, y);
+//                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getItem() != null){
+//                    cell.setItem(null);
+//                }
+
                 if (cell.getActor() != null) {
                     Tiles.drawTile(context, cell.getActor(), x, y);
-                } else {
+                }
+                else if (cell.getItem() != null) {
+                    Tiles.drawTile(context, cell.getItem(), x, y);}
+                else {
                     Tiles.drawTile(context, cell, x, y);
                 }
             }
         }
         healthLabel.setText("" + map.getPlayer().getHealth());
+        inventoryLabel.setText("" + map.getPlayer().getInventory());
     }
 }
