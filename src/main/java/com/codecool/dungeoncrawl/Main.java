@@ -10,6 +10,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -22,6 +23,7 @@ public class Main extends Application {
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
+    Label nameLabel = new Label();
     Label healthLabel = new Label();
     Label inventoryLabel = new Label();
     Button pickButton = new Button("Pick Up Item");
@@ -40,13 +42,17 @@ public class Main extends Application {
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
 
-        ui.add(new Label("Inventory: "), 0, 50);
-        ui.add(inventoryLabel, 50, 50);
+        ui.add(new Label("Inventory: "), 0, 2);
+        ui.add(inventoryLabel, 0, 4);
+
+        ui.add(new Label("Name: "),0, 5);
+        ui.add(nameLabel,1,5);
 
 
         ui.add(pickButton,0,150);
 
         BorderPane borderPane = new BorderPane();
+
 
         borderPane.setCenter(canvas);
         borderPane.setRight(ui);
@@ -58,6 +64,9 @@ public class Main extends Application {
 
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
+        TextInputDialog td = new TextInputDialog("name");
+        td.setHeaderText("Enter your name");
+        td.showAndWait().ifPresent(name -> {nameLabel.setText(name);});
     }
 
     private void itemDetection() {
