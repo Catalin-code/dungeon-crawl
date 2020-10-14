@@ -55,50 +55,23 @@ public class Main extends Application {
     private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case UP:
-                if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).getActor() != null) {
-                    map.getPlayer().move(0,1);
-                }
-
                 map.getPlayer().move(0, -1);
-
-                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
-                    map.getPlayer().move(0, 1);
-                }
                 refresh();
                 break;
             case DOWN:
-                if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, 1).getActor() != null) {
-                    map.getPlayer().move(0,-1);
-                }
                 map.getPlayer().move(0, 1);
-                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
-                    map.getPlayer().move(0, -1);
-                }
                 refresh();
                 break;
             case LEFT:
-                if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(-1, 0).getActor() != null) {
-                    map.getPlayer().move(1,0);
-                }
                 map.getPlayer().move(-1, 0);
-                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
-                    map.getPlayer().move(1, 0);
-                }
                 refresh();
                 break;
             case RIGHT:
-                if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(1, 0).getActor() != null) {
-                    map.getPlayer().move(-1,0);
-                }
-                map.getPlayer().move(1,0);
-                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
-                    map.getPlayer().move(-1, 0);
-                }
+                map.getPlayer().move(1, 0);
                 refresh();
                 break;
         }
     }
-
 
     private void refresh() {
         context.setFill(Color.BLACK);
@@ -108,7 +81,7 @@ public class Main extends Application {
                 Cell cell = map.getCell(x, y);
                 if (cell.getActor() != null) {
                     Tiles.drawTile(context, cell.getActor(), x, y);
-                } else{
+                } else {
                     Tiles.drawTile(context, cell, x, y);
                 }
             }
