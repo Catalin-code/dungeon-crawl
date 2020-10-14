@@ -39,8 +39,7 @@ public class Main extends Application {
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
 
-        ui.add(new Label("Health: "), 0, 0);
-        ui.add(healthLabel, 1, 0);
+        ui.add(healthLabel, 0, 0);
         ui.add(skeletonHealthLabel, 0, 1);
         skeletonHealthLabel.setVisible(false);
         ui.add(octopusHealthLabel, 0, 2);
@@ -62,21 +61,44 @@ public class Main extends Application {
         primaryStage.show();
     }
 
+    private void fight(String enemy){
+        switch (enemy){
+            case "skeleton":
+                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).getActor() == map.getSkeleton()){
+                    int damageToSkeleton = map.getSkeleton().getHealth() - 50;
+                    int damageToPlayer = map.getPlayer().getHealth() - 10;
+                    map.getSkeleton().setHealth(damageToSkeleton);
+                    map.getPlayer().setHealth(damageToPlayer);
+                }
+                if (map.getSkeleton().getHealth() <= 0){
+                    map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).setActor(null);
+                }
+                break;
+            default: break;
+        }
+    }
+
     private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case UP:
+                fight("skeleton");
                 map.getPlayer().move(0, -1);
                 refresh();
                 break;
             case DOWN:
+                fight("skeleton");
+
                 map.getPlayer().move(0, 1);
                 refresh();
                 break;
             case LEFT:
+                fight("skeleton");
+
                 map.getPlayer().move(-1, 0);
                 refresh();
                 break;
             case RIGHT:
+                fight("skeleton");
                 map.getPlayer().move(1, 0);
                 refresh();
                 break;
@@ -96,8 +118,8 @@ public class Main extends Application {
                 }
             }
         }
-        healthLabel.setText("" + map.getPlayer().getHealth());
-        skeletonHealthLabel.setText("Skeleton health: " + map.getSkeleton().getHealth());
+        healthLabel.setText("Health:  " + map.getPlayer().getHealth());
+        skeletonHealthLabel.setText("Skeleton health:  " + map.getSkeleton().getHealth());
         if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, 1).getActor() == map.getSkeleton() && skeletonHealthLabel.isVisible() == false){
             skeletonHealthLabel.setVisible(true);
         } else if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).getActor() == map.getSkeleton()){
