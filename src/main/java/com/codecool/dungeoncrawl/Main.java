@@ -25,6 +25,9 @@ public class Main extends Application {
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
+    Label skeletonHealthLabel = new Label();
+    Label octopusHealthLabel = new Label();
+    Label ghostHealthLabel = new Label();
 
     public static void main(String[] args) {
         launch(args);
@@ -38,6 +41,12 @@ public class Main extends Application {
 
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
+        ui.add(skeletonHealthLabel, 0, 1);
+        skeletonHealthLabel.setVisible(false);
+        ui.add(octopusHealthLabel, 0, 2);
+        octopusHealthLabel.setVisible(false);
+        ui.add(ghostHealthLabel, 0, 3);
+        ghostHealthLabel.setVisible(false);
 
         BorderPane borderPane = new BorderPane();
 
@@ -56,45 +65,19 @@ public class Main extends Application {
     private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case UP:
-                if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).getActor() != null) {
-                    map.getPlayer().move(0,1);
-                }
                 map.getPlayer().move(0, -1);
-
-
-                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
-                    map.getPlayer().move(0, 1);
-                }
                 refresh();
                 break;
             case DOWN:
-                if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, 1).getActor() != null) {
-                    map.getPlayer().move(0,-1);
-                }
                 map.getPlayer().move(0, 1);
-                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
-                    map.getPlayer().move(0, -1);
-                }
                 refresh();
                 break;
             case LEFT:
-                if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(-1, 0).getActor() != null) {
-                    map.getPlayer().move(1,0);
-                }
                 map.getPlayer().move(-1, 0);
-                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
-                    map.getPlayer().move(1, 0);
-                }
                 refresh();
                 break;
             case RIGHT:
-                if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(1, 0).getActor() != null) {
-                    map.getPlayer().move(-1,0);
-                }
-                map.getPlayer().move(1,0);
-                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
-                    map.getPlayer().move(-1, 0);
-                }
+                map.getPlayer().move(1, 0);
                 refresh();
                 break;
         }
@@ -114,5 +97,17 @@ public class Main extends Application {
             }
         }
         healthLabel.setText("" + map.getPlayer().getHealth());
+        skeletonHealthLabel.setText("Skeleton health: " + map.getSkeleton().getHealth());
+        if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, 1).getActor() == map.getSkeleton() && skeletonHealthLabel.isVisible() == false){
+            skeletonHealthLabel.setVisible(true);
+        } else if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).getActor() == map.getSkeleton()){
+            skeletonHealthLabel.setVisible(true);
+        } else if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(1, 0).getActor() == map.getSkeleton()){
+            skeletonHealthLabel.setVisible(true);
+        } else if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(-1, 0).getActor() == map.getSkeleton()){
+            skeletonHealthLabel.setVisible(true);
+        } else {
+            skeletonHealthLabel.setVisible(false);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.Drawable;
 
 public abstract class Actor implements Drawable {
@@ -13,15 +14,29 @@ public abstract class Actor implements Drawable {
     }
 
     public void move(int dx, int dy) {
+        boolean move = true;
         Cell nextCell = cell.getNeighbor(dx, dy);
-        cell.setActor(null);
-        nextCell.setActor(this);
-        cell = nextCell;
+        if (nextCell.getType().equals(CellType.WALL)){
+            move = false;
+        }
+
+        if (nextCell.getActor() != null){
+            move = false;
+
+        }
+
+        if (move == true){
+            cell.setActor(null);
+            nextCell.setActor(this);
+            cell = nextCell;
+        }
     }
 
     public int getHealth() {
         return health;
     }
+
+    public void decreaseHealth(int health) { this.health -= health;}
 
     public Cell getCell() {
         return cell;
