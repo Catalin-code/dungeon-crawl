@@ -80,55 +80,19 @@ public class Main extends Application {
     private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case UP:
-                if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).getActor() != null) {
-                    map.getPlayer().move(0,1);
-                }
-
                 map.getPlayer().move(0, -1);
-                itemDetection();
-
-
-                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
-                    map.getPlayer().move(0, 1);
-                }
                 refresh();
                 break;
             case DOWN:
-                if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, 1).getActor() != null) {
-                    map.getPlayer().move(0,-1);
-                }
                 map.getPlayer().move(0, 1);
-
-                itemDetection();
-
-                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
-                    map.getPlayer().move(0, -1);
-                }
                 refresh();
                 break;
             case LEFT:
-                if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(-1, 0).getActor() != null) {
-                    map.getPlayer().move(1,0);
-                }
                 map.getPlayer().move(-1, 0);
-                itemDetection();
-
-                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
-                    map.getPlayer().move(1, 0);
-                }
                 refresh();
                 break;
             case RIGHT:
-                if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(1, 0).getActor() != null) {
-                    map.getPlayer().move(-1,0);
-                }
-                map.getPlayer().move(1,0);
-
-                itemDetection();
-
-                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
-                    map.getPlayer().move(-1, 0);
-                }
+                map.getPlayer().move(1, 0);
                 refresh();
                 break;
         }
@@ -140,10 +104,6 @@ public class Main extends Application {
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 Cell cell = map.getCell(x, y);
-//                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getItem() != null){
-//                    cell.setItem(null);
-//                }
-
                 if (cell.getActor() != null) {
                     Tiles.drawTile(context, cell.getActor(), x, y);
                 }
