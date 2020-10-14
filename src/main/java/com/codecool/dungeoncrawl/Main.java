@@ -4,14 +4,13 @@ import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
-import com.codecool.dungeoncrawl.logic.actors.Skeleton;
+import com.codecool.dungeoncrawl.logic.actors.Octopus;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -59,8 +58,8 @@ public class Main extends Application {
                 if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).getActor() != null) {
                     map.getPlayer().move(0,1);
                 }
-                map.getPlayer().move(0, -1);
 
+                map.getPlayer().move(0, -1);
 
                 if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType().equals(CellType.WALL)) {
                     map.getPlayer().move(0, 1);
@@ -100,6 +99,7 @@ public class Main extends Application {
         }
     }
 
+
     private void refresh() {
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -108,7 +108,7 @@ public class Main extends Application {
                 Cell cell = map.getCell(x, y);
                 if (cell.getActor() != null) {
                     Tiles.drawTile(context, cell.getActor(), x, y);
-                } else {
+                } else{
                     Tiles.drawTile(context, cell, x, y);
                 }
             }
