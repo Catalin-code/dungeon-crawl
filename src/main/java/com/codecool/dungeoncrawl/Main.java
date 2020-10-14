@@ -1,10 +1,8 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.logic.Cell;
-import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
-import com.codecool.dungeoncrawl.logic.actors.Skeleton;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -12,7 +10,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -45,6 +42,7 @@ public class Main extends Application {
 
         ui.add(new Label("Inventory: "), 0, 50);
         ui.add(inventoryLabel, 50, 50);
+
 
         ui.add(pickButton,0,150);
 
@@ -81,18 +79,22 @@ public class Main extends Application {
         switch (keyEvent.getCode()) {
             case UP:
                 map.getPlayer().move(0, -1);
+                itemDetection();
                 refresh();
                 break;
             case DOWN:
                 map.getPlayer().move(0, 1);
+                itemDetection();
                 refresh();
                 break;
             case LEFT:
                 map.getPlayer().move(-1, 0);
+                itemDetection();
                 refresh();
                 break;
             case RIGHT:
                 map.getPlayer().move(1, 0);
+                itemDetection();
                 refresh();
                 break;
         }
