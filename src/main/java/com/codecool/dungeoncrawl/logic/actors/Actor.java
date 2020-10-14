@@ -25,7 +25,7 @@ public abstract class Actor implements Drawable {
 
         }
 
-        if (move == true){
+        if (move){
             cell.setActor(null);
             nextCell.setActor(this);
             cell = nextCell;
