@@ -5,6 +5,7 @@ import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Octopus;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -16,6 +17,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import java.util.Random;
 
 public class Main extends Application {
     GameMap map = MapLoader.loadMap();
@@ -24,7 +26,7 @@ public class Main extends Application {
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
-
+    Random rand = new Random();
     public static void main(String[] args) {
         launch(args);
     }
@@ -56,23 +58,28 @@ public class Main extends Application {
         switch (keyEvent.getCode()) {
             case UP:
                 map.getPlayer().move(0, -1);
+//                map.getGhost().move(x, y-1);
                 refresh();
                 break;
             case DOWN:
                 map.getPlayer().move(0, 1);
+//                map.getGhost().move(x, y + 1);
                 refresh();
                 break;
             case LEFT:
                 map.getPlayer().move(-1, 0);
+//                map.getGhost().move(-1, 0);
                 refresh();
                 break;
             case RIGHT:
                 map.getPlayer().move(1, 0);
+//                map.getGhost().move(1,0);
                 refresh();
                 break;
         }
-    }
 
+    }
+    private int moveOctopus = 0;
     private void refresh() {
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -86,6 +93,27 @@ public class Main extends Application {
                 }
             }
         }
+
+        //Octopus move
+        if (moveOctopus <2 ){
+            map.getOctopus().move(1,0);
+        } else{
+            map.getOctopus().move(-1,0);
+        }
+        moveOctopus++;
+        if (moveOctopus == 8){
+            moveOctopus = 0;
+            map.getOctopus().move(3,0);
+        }
+
+        //Ghost move
+        int x = 0;
+        int y = 0;
+        while(map.getCell(x,y).getTileName() != "floor"){
+            x = rand.nextInt(map.getWidth()-1);
+            y = rand.nextInt(map.getHeight()-1);
+        }
+        map.getGhost().move(x-map.getGhost().getX(), y-map.getGhost().getY());
         healthLabel.setText("" + map.getPlayer().getHealth());
     }
 }
