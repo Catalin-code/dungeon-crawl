@@ -66,6 +66,9 @@ public class MapLoader {
                         case 'E':
                             cell.setType(CellType.EXIT);
                             break;
+                        case 'G':
+                            cell.setType(CellType.GRASS);
+                            break;
                         case 'T':
                             cell.setType(CellType.TREE);
                             break;
