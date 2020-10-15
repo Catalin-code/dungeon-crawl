@@ -1,16 +1,16 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 import java.util.Random;
 
 public class Main extends Application {
-    GameMap map = MapLoader.loadMap();
+    GameMap map = MapLoader.loadMap("/map.txt");
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -33,6 +33,8 @@ public class Main extends Application {
     Label skeletonHealthLabel = new Label();
     Label octopusHealthLabel = new Label();
     Label ghostHealthLabel = new Label();
+    int ghost_move = 4;
+    int playerHp = map.getPlayer().getHealth();
 
     public static void main(String[] args) {
         launch(args);
@@ -80,6 +82,17 @@ public class Main extends Application {
         td.showAndWait().ifPresent(name -> {nameLabel.setText(name);});
     }
 
+    private void changeMap() {
+        if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType() == CellType.EXIT){
+            map = MapLoader.loadMap("/map2.txt");
+            Canvas canvas = new Canvas(
+                    map.getWidth() * Tiles.TILE_WIDTH,
+                    map.getHeight() * Tiles.TILE_WIDTH);
+            GraphicsContext context = canvas.getGraphicsContext2D();
+            refresh();
+        }
+    }
+
     private void itemDetection() {
         if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getItem() != null) {
             pickButton.setVisible(true);
@@ -95,17 +108,21 @@ public class Main extends Application {
         });
     }
 
-    private void fight(String enemy){
+    private void fight(String enemy, int dx, int dy){
         switch (enemy){
             case "skeleton":
-                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).getActor() == map.getSkeleton()){
+                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(dx, dy).getActor() == map.getSkeleton()){
                     int damageToSkeleton = map.getSkeleton().getHealth() - 50;
-                    int damageToPlayer = map.getPlayer().getHealth() - 10;
                     map.getSkeleton().setHealth(damageToSkeleton);
-                    map.getPlayer().setHealth(damageToPlayer);
+                    playerHp = playerHp - 10;
                 }
                 if (map.getSkeleton().getHealth() <= 0){
-                    map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).setActor(null);
+                    map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(dx, dy).setActor(null);
+                }
+                break;
+            case "octopus":
+                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(dx, dy).getActor() == map.getOctopus()){
+                    playerHp = playerHp - 100;
                 }
                 break;
             default: break;
@@ -115,52 +132,106 @@ public class Main extends Application {
     private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case UP:
+
+                changeMap();
                 if(nameLabel.getText().equals("Ciprian") || nameLabel.getText().equals("Despanu") || nameLabel.getText().equals("Andrei")){
                     map.getPlayer().move2(0,-1);
                     refresh();
+                }else{
+                    if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).getItem() != null){
+                        if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).getItem().getTileName() == "apple"){
+                            playerHp = playerHp + 20;
+                            map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).setItem(null);
+                        }
+                    }
+                    if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).getActor() != null){
+                        fight(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).getActor().getTileName(),0,-1);
+
+                    }
+                    map.getPlayer().move(0, -1);
+                    itemDetection();
+                    refresh();
+                    ghost_move++;
+                    break;
+
                 }
-                fight("skeleton");
-                map.getPlayer().move(0, -1);
-                itemDetection();
-                refresh();
-                break;
             case DOWN:
+
+                changeMap();
                 if(nameLabel.getText().equals("Ciprian") || nameLabel.getText().equals("Despanu") || nameLabel.getText().equals("Andrei")){
                     map.getPlayer().move2(0,1);
                     refresh();
-                }
-                fight("skeleton");
+                } else{
 
-                map.getPlayer().move(0, 1);
-                itemDetection();
-                refresh();
-                break;
+                    if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, 1).getActor() != null){
+                        fight(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, 1).getActor().getTileName(),0,1);
+
+                    }
+
+                    if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, 1).getItem() != null){
+                        if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, 1).getItem().getTileName() == "apple"){
+                            playerHp = playerHp + 20;
+                            map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, 1).setItem(null);
+                        }
+                    }
+
+                    map.getPlayer().move(0, 1);
+                    itemDetection();
+                    refresh();
+                    ghost_move++;
+                    break;
+                }
             case LEFT:
+                changeMap();
                 if(nameLabel.getText().equals("Ciprian") || nameLabel.getText().equals("Despanu") || nameLabel.getText().equals("Andrei")){
                     map.getPlayer().move2(-1,0);
                     refresh();
-                }
-                fight("skeleton");
+                } else{
 
-                map.getPlayer().move(-1, 0);
-                itemDetection();
-                refresh();
-                break;
+                    if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(-1, 0).getItem() != null){
+                        if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(-1, 0).getItem().getTileName() == "apple"){
+                            playerHp = playerHp + 20;
+                            map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(-1, 0).setItem(null);
+                        }
+                    }
+
+                    if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(-1, 0).getActor() != null){
+                        fight(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(-1, 0).getActor().getTileName(),-1,0);
+
+                    }
+
+                    map.getPlayer().move(-1, 0);
+                    itemDetection();
+                    refresh();
+                    ghost_move++;
+                    break;
+                }
             case RIGHT:
+                changeMap();
                 if(nameLabel.getText().equals("Ciprian") || nameLabel.getText().equals("Despanu") || nameLabel.getText().equals("Andrei")){
                     map.getPlayer().move2(1,0);
                     refresh();
                 }else{
+
+                    if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(1, 0).getItem() != null){
+                        if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(1, 0).getItem().getTileName() == "apple"){
+                            playerHp = playerHp + 20;
+                            map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(1, 0).setItem(null);
+                        }
+                    }
+
+                    if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(1, 0).getActor() != null){
+                        fight(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(1, 0).getActor().getTileName(),1,0);
+
+                    }
                     map.getPlayer().move(1, 0);
                     itemDetection();
                     refresh();
+                    ghost_move++;
                     break;
 
                 }
-                fight("skeleton");
-                map.getPlayer().move(1, 0);
-                refresh();
-                break;
+
         }
     }
 
@@ -168,21 +239,62 @@ public class Main extends Application {
     private void refresh() {
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        for (int x = 0; x < map.getWidth(); x++) {
+        if(playerHp <= 0) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Game Over");
+            alert.setHeaderText("Game Over");
+            alert.setContentText("You died , restart the game and try again!");
+
+            alert.showAndWait();
+            System.exit(0);
+        }
+
+        if(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getType() == CellType.FINISH){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Game Over");
+            alert.setHeaderText("Congratulations");
+            alert.setContentText("You Win");
+
+            alert.showAndWait();
+            System.exit(0);
+        }
+
+        int startX;
+        int endX;
+
+        if(map.getWidth() <= 25) {
+            startX = 0;
+            endX = 25;
+        } else {
+            int before = 12;
+            int after = 12;
+            int playerX = map.getPlayer().getX();
+            if ((playerX - before) < 0 ){
+                before = playerX;
+                after += after - before;
+            } else if((map.getWidth() - 1) - playerX < after) {
+                after = map.getWidth() - 1 - playerX;
+                before += before - after;
+            }
+            startX = playerX - before;
+            endX = playerX + after + 1;
+        }
+
+
+
+        for (int x = startX; x < endX; x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 Cell cell = map.getCell(x, y);
                 if (cell.getActor() != null) {
-                    Tiles.drawTile(context, cell.getActor(), x, y);
+                    Tiles.drawTile(context, cell.getActor(), x-startX, y);
                 }
                 else if (cell.getItem() != null) {
-                    Tiles.drawTile(context, cell.getItem(), x, y);}
+                    Tiles.drawTile(context, cell.getItem(), x-startX, y);}
                 else {
-                    Tiles.drawTile(context, cell, x, y);
+                    Tiles.drawTile(context, cell, x-startX, y);
                 }
             }
         }
-        healthLabel.setText("Health:  " + map.getPlayer().getHealth());
-        skeletonHealthLabel.setText("Skeleton health:  " + map.getSkeleton().getHealth());
         if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, 1).getActor() == map.getSkeleton() && !skeletonHealthLabel.isVisible()){
             skeletonHealthLabel.setVisible(true);
         } else if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).getActor() == map.getSkeleton()){
@@ -196,26 +308,35 @@ public class Main extends Application {
         }
 
         //Octopus move
-        if (moveOctopus <2 ){
-            map.getOctopus().move(1,0);
-        } else{
-            map.getOctopus().move(-1,0);
-        }
-        moveOctopus++;
-        if (moveOctopus == 8){
-            moveOctopus = 0;
-            map.getOctopus().move(3,0);
+        if(ghost_move % 2 == 0){
+
+            if (moveOctopus <2 ){
+                map.getOctopus().move(1,0);
+            } else{
+                map.getOctopus().move(-1,0);
+            }
+            moveOctopus++;
+            if (moveOctopus == 8){
+                moveOctopus = 0;
+                map.getOctopus().move(3,0);
+            }
         }
 
         //Ghost move
         int x = 0;
         int y = 0;
-        while(!map.getCell(x, y).getTileName().equals("floor")){
-            x = rand.nextInt(map.getWidth()-1);
-            y = rand.nextInt(map.getHeight()-1);
+        if(ghost_move % 5 == 0){
+
+            while(!map.getCell(x, y).getTileName().equals("floor")){
+                x = rand.nextInt(map.getWidth()-1);
+                y = rand.nextInt(map.getHeight()-1);
+            }
         }
+
+
         map.getGhost().move(x-map.getGhost().getX(), y-map.getGhost().getY());
-        healthLabel.setText("" + map.getPlayer().getHealth());
         inventoryLabel.setText("" + map.getPlayer().getInventory());
+        healthLabel.setText("Health:  " + playerHp);
+        skeletonHealthLabel.setText("Skeleton health:  " + map.getSkeleton().getHealth());
     }
 }

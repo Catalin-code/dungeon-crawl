@@ -45,12 +45,22 @@ public abstract class Actor implements Drawable {
             move = false;
         }
 
+        if (nextCell.getType().equals(CellType.TREE)){
+            move = false;
+        }
+
+        if (nextCell.getType().equals(CellType.WATER)){
+            move = false;
+        }
+
         if (nextCell.getType().equals(CellType.DOOR)){
             if(inventory.contains("Key")){
                 move = true;
                 nextCell.setType(CellType.CDOOR);
             } else { move = false; }
         }
+
+
 
         if (nextCell.getActor() != null){
             move = false;

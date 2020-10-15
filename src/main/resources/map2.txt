@@ -1,0 +1,21 @@
+84 20
+#############
+#...........#
+#....T......#######################################################################
+#.................................................................................#
+#...........######.........a......................................................#
+#...........#    #................................................................#
+#.....s.....#    #................................................................#
+#TTWWWBWWTT##    #................................................................#
+#TTWWWBWWTT##    #TTTTTTTTTTTTTTTTTTTTTTTTTTTTT.....TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT#
+#TTWWWBWWTT##    #TTTTTTTTTTTTTTTTTTTTTTTTTTTTT.....TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT#
+#TTWWWBWWTT##    #TTTTTTTTTTTTTTTTTTTTTTTTTTTTT.....TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT#
+#...........#    #TTTTTTTTTTTTTTTTTTTTTTTTTTTTT.....TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT#
+ ####...####     #TTTTTTTTTTTTTTTTTTTTTTTTTT....o.......TTTTTTTTTTTTTTTTTTTTTTTTTT#
+  #.......#      #TTTTTTTTTTTTTTTTTTTTTTTTTTTTT.....TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT#
+  #.......#      #TTTTTTTTTTTTTTTTTTTTTTTTTTTTT.....TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT#
+  #.....g.#      #TTTTTTTTTTTTTTTTTTTTTTTTTTTTT.....TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT#
+  #.......#      #TTTTTTTTTTTTTTTTTTTTTTTTTTTTT.....TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT#
+  #..@....#      #TTTTTTTTTTTTTTTTTTTTTTTTTTTTT.....TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT#
+  #.......#      #TTTTTTTTTTTTTTTTTTTTTTTTTTTTT.....TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT#
+  #########      ################################F#################################
