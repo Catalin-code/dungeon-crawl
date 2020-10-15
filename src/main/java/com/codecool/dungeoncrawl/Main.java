@@ -3,8 +3,6 @@ package com.codecool.dungeoncrawl;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
-import com.codecool.dungeoncrawl.logic.actors.Octopus;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -18,6 +16,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
 import java.util.Random;
 
 public class Main extends Application {
@@ -184,7 +183,7 @@ public class Main extends Application {
         }
         healthLabel.setText("Health:  " + map.getPlayer().getHealth());
         skeletonHealthLabel.setText("Skeleton health:  " + map.getSkeleton().getHealth());
-        if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, 1).getActor() == map.getSkeleton() && skeletonHealthLabel.isVisible() == false){
+        if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, 1).getActor() == map.getSkeleton() && !skeletonHealthLabel.isVisible()){
             skeletonHealthLabel.setVisible(true);
         } else if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).getActor() == map.getSkeleton()){
             skeletonHealthLabel.setVisible(true);
@@ -211,7 +210,7 @@ public class Main extends Application {
         //Ghost move
         int x = 0;
         int y = 0;
-        while(map.getCell(x,y).getTileName() != "floor"){
+        while(!map.getCell(x, y).getTileName().equals("floor")){
             x = rand.nextInt(map.getWidth()-1);
             y = rand.nextInt(map.getHeight()-1);
         }
