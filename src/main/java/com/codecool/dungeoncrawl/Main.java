@@ -3,6 +3,8 @@ package com.codecool.dungeoncrawl;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.actors.Octopus;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -16,6 +18,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import java.util.Random;
 
 public class Main extends Application {
     GameMap map = MapLoader.loadMap();
@@ -25,6 +28,7 @@ public class Main extends Application {
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label nameLabel = new Label();
     Label healthLabel = new Label();
+    Random rand = new Random();
     Label inventoryLabel = new Label();
     Button pickButton = new Button("Pick Up Item");
 
@@ -52,7 +56,6 @@ public class Main extends Application {
         ui.add(pickButton,0,150);
 
         BorderPane borderPane = new BorderPane();
-
 
         borderPane.setCenter(canvas);
         borderPane.setRight(ui);
@@ -128,6 +131,8 @@ public class Main extends Application {
         }
     }
 
+    }
+    private int moveOctopus = 0;
     private void refresh() {
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -144,6 +149,27 @@ public class Main extends Application {
                 }
             }
         }
+
+        //Octopus move
+        if (moveOctopus <2 ){
+            map.getOctopus().move(1,0);
+        } else{
+            map.getOctopus().move(-1,0);
+        }
+        moveOctopus++;
+        if (moveOctopus == 8){
+            moveOctopus = 0;
+            map.getOctopus().move(3,0);
+        }
+
+        //Ghost move
+        int x = 0;
+        int y = 0;
+        while(map.getCell(x,y).getTileName() != "floor"){
+            x = rand.nextInt(map.getWidth()-1);
+            y = rand.nextInt(map.getHeight()-1);
+        }
+        map.getGhost().move(x-map.getGhost().getX(), y-map.getGhost().getY());
         healthLabel.setText("" + map.getPlayer().getHealth());
         inventoryLabel.setText("" + map.getPlayer().getInventory());
     }
