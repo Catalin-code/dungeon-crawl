@@ -17,6 +17,18 @@ public class Player extends Actor {
         return super.getInventory();
     }
 
+
+    private int health = super.getHealth();
+
+    @Override
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
     public Player(Cell cell) {
         super(cell);
     }

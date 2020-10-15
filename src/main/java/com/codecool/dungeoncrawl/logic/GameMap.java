@@ -4,6 +4,7 @@ import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.actors.Skeleton;
 import com.codecool.dungeoncrawl.logic.actors.Octopus;
 import com.codecool.dungeoncrawl.logic.actors.Ghost;
+import com.codecool.dungeoncrawl.logic.actors.Skeleton;
 
 public class GameMap {
     private int width;
@@ -33,6 +34,7 @@ public class GameMap {
     public void setPlayer(Player player) {
         this.player = player;
     }
+
     public Player getPlayer() {
         return player;
     }
@@ -55,6 +57,7 @@ public class GameMap {
     public int getWidth() {
         return width;
     }
+
     public int getHeight() {
         return height;
     }

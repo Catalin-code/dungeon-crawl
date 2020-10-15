@@ -31,6 +31,9 @@ public class Main extends Application {
     Random rand = new Random();
     Label inventoryLabel = new Label();
     Button pickButton = new Button("Pick Up Item");
+    Label skeletonHealthLabel = new Label();
+    Label octopusHealthLabel = new Label();
+    Label ghostHealthLabel = new Label();
 
     public static void main(String[] args) {
         launch(args);
@@ -43,8 +46,13 @@ public class Main extends Application {
         ui.setPadding(new Insets(10));
         pickButton.setVisible(false);
 
-        ui.add(new Label("Health: "), 0, 0);
-        ui.add(healthLabel, 1, 0);
+        ui.add(healthLabel, 0, 0);
+        ui.add(skeletonHealthLabel, 0, 1);
+        skeletonHealthLabel.setVisible(false);
+        ui.add(octopusHealthLabel, 0, 2);
+        octopusHealthLabel.setVisible(false);
+        ui.add(ghostHealthLabel, 0, 3);
+        ghostHealthLabel.setVisible(false);
 
         ui.add(new Label("Inventory: "), 0, 2);
         ui.add(inventoryLabel, 0, 4);
@@ -88,6 +96,23 @@ public class Main extends Application {
         });
     }
 
+    private void fight(String enemy){
+        switch (enemy){
+            case "skeleton":
+                if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).getActor() == map.getSkeleton()){
+                    int damageToSkeleton = map.getSkeleton().getHealth() - 50;
+                    int damageToPlayer = map.getPlayer().getHealth() - 10;
+                    map.getSkeleton().setHealth(damageToSkeleton);
+                    map.getPlayer().setHealth(damageToPlayer);
+                }
+                if (map.getSkeleton().getHealth() <= 0){
+                    map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).setActor(null);
+                }
+                break;
+            default: break;
+        }
+    }
+
     private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case UP:
@@ -95,6 +120,7 @@ public class Main extends Application {
                     map.getPlayer().move2(0,-1);
                     refresh();
                 }
+                fight("skeleton");
                 map.getPlayer().move(0, -1);
                 itemDetection();
                 refresh();
@@ -104,6 +130,8 @@ public class Main extends Application {
                     map.getPlayer().move2(0,1);
                     refresh();
                 }
+                fight("skeleton");
+
                 map.getPlayer().move(0, 1);
                 itemDetection();
                 refresh();
@@ -113,6 +141,8 @@ public class Main extends Application {
                     map.getPlayer().move2(-1,0);
                     refresh();
                 }
+                fight("skeleton");
+
                 map.getPlayer().move(-1, 0);
                 itemDetection();
                 refresh();
@@ -128,6 +158,10 @@ public class Main extends Application {
                     break;
 
                 }
+                fight("skeleton");
+                map.getPlayer().move(1, 0);
+                refresh();
+                break;
         }
     }
 
@@ -147,6 +181,19 @@ public class Main extends Application {
                     Tiles.drawTile(context, cell, x, y);
                 }
             }
+        }
+        healthLabel.setText("Health:  " + map.getPlayer().getHealth());
+        skeletonHealthLabel.setText("Skeleton health:  " + map.getSkeleton().getHealth());
+        if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, 1).getActor() == map.getSkeleton() && skeletonHealthLabel.isVisible() == false){
+            skeletonHealthLabel.setVisible(true);
+        } else if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(0, -1).getActor() == map.getSkeleton()){
+            skeletonHealthLabel.setVisible(true);
+        } else if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(1, 0).getActor() == map.getSkeleton()){
+            skeletonHealthLabel.setVisible(true);
+        } else if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(-1, 0).getActor() == map.getSkeleton()){
+            skeletonHealthLabel.setVisible(true);
+        } else {
+            skeletonHealthLabel.setVisible(false);
         }
 
         //Octopus move
