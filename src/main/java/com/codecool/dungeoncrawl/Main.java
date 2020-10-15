@@ -65,6 +65,7 @@ public class Main extends Application {
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
         TextInputDialog td = new TextInputDialog("name");
+        td.setTitle("Enter name");
         td.setHeaderText("Enter your name");
         td.showAndWait().ifPresent(name -> {nameLabel.setText(name);});
     }
@@ -87,25 +88,43 @@ public class Main extends Application {
     private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case UP:
+                if(nameLabel.getText().equals("Ciprian") || nameLabel.getText().equals("Despanu") || nameLabel.getText().equals("Andrei")){
+                    map.getPlayer().move2(0,-1);
+                    refresh();
+                }
                 map.getPlayer().move(0, -1);
                 itemDetection();
                 refresh();
                 break;
             case DOWN:
+                if(nameLabel.getText().equals("Ciprian") || nameLabel.getText().equals("Despanu") || nameLabel.getText().equals("Andrei")){
+                    map.getPlayer().move2(0,1);
+                    refresh();
+                }
                 map.getPlayer().move(0, 1);
                 itemDetection();
                 refresh();
                 break;
             case LEFT:
+                if(nameLabel.getText().equals("Ciprian") || nameLabel.getText().equals("Despanu") || nameLabel.getText().equals("Andrei")){
+                    map.getPlayer().move2(-1,0);
+                    refresh();
+                }
                 map.getPlayer().move(-1, 0);
                 itemDetection();
                 refresh();
                 break;
             case RIGHT:
-                map.getPlayer().move(1, 0);
-                itemDetection();
-                refresh();
-                break;
+                if(nameLabel.getText().equals("Ciprian") || nameLabel.getText().equals("Despanu") || nameLabel.getText().equals("Andrei")){
+                    map.getPlayer().move2(1,0);
+                    refresh();
+                }else{
+                    map.getPlayer().move(1, 0);
+                    itemDetection();
+                    refresh();
+                    break;
+
+                }
         }
     }
 
