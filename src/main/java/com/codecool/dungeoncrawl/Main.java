@@ -131,7 +131,6 @@ public class Main extends Application {
         }
     }
 
-    }
     private int moveOctopus = 0;
     private void refresh() {
         context.setFill(Color.BLACK);
