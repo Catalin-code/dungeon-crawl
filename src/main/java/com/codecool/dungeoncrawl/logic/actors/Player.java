@@ -5,6 +5,16 @@ import com.codecool.dungeoncrawl.logic.Cell;
 import java.util.List;
 
 public class Player extends Actor {
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     private List<String> inventory = getInventory();
 
     @Override
@@ -25,6 +35,13 @@ public class Player extends Actor {
         return health;
     }
 
+    @Override
+    public String getTileName() {
+        return "player";
+    }
+
+
+
     public void setHealth(int health) {
         this.health = health;
     }
@@ -33,12 +50,9 @@ public class Player extends Actor {
         super(cell);
     }
 
-    public void addToInventory(String item){
+    public void addToInventory(String item) {
         inventory.add(item);
         setInventory(inventory);
-    }
 
-    public String getTileName() {
-        return "player";
     }
 }

@@ -6,10 +6,20 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import javafx.application.Application;
 import javafx.application.Platform;
+import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
+import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.GameMap;
+import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.actors.Player;
+import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -18,6 +28,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.util.Random;
+import java.sql.SQLException;
 
 public class Main extends Application {
     GameMap map = MapLoader.loadMap("/map.txt");
@@ -35,6 +46,7 @@ public class Main extends Application {
     Label ghostHealthLabel = new Label();
     int ghost_move = 4;
     int playerHp = map.getPlayer().getHealth();
+    GameDatabaseManager dbManager;
 
     public static void main(String[] args) {
         launch(args);
@@ -42,6 +54,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        setupDbManager();
         GridPane ui = new GridPane();
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
@@ -72,6 +85,7 @@ public class Main extends Application {
         Scene scene = new Scene(borderPane);
         primaryStage.setScene(scene);
         refresh();
+        scene.setOnKeyReleased(this::onKeyReleased);
         scene.addEventFilter(KeyEvent.KEY_PRESSED,this::onKeyPressed);
 
         primaryStage.setTitle("Dungeon Crawl");
@@ -79,7 +93,19 @@ public class Main extends Application {
         TextInputDialog td = new TextInputDialog("name");
         td.setTitle("Enter name");
         td.setHeaderText("Enter your name");
-        td.showAndWait().ifPresent(name -> {nameLabel.setText(name);});
+        td.showAndWait().ifPresent(name -> {
+            nameLabel.setText(name);
+            map.getPlayer().setName(name);
+        });
+    }
+    private void onKeyReleased(KeyEvent keyEvent) {
+        KeyCombination exitCombinationMac = new KeyCodeCombination(KeyCode.W, KeyCombination.SHORTCUT_DOWN);
+        KeyCombination exitCombinationWin = new KeyCodeCombination(KeyCode.F4, KeyCombination.ALT_DOWN);
+        if (exitCombinationMac.match(keyEvent)
+                || exitCombinationWin.match(keyEvent)
+                || keyEvent.getCode() == KeyCode.ESCAPE) {
+            exit();
+        }
     }
 
     private void changeMap() {
@@ -231,11 +257,16 @@ public class Main extends Application {
                     break;
 
                 }
+            case S:
+                Player player = map.getPlayer();
+                dbManager.savePlayer(player);
+                break;
 
         }
     }
 
     private int moveOctopus = 0;
+
     private void refresh() {
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -339,4 +370,22 @@ public class Main extends Application {
         healthLabel.setText("Health:  " + playerHp);
         skeletonHealthLabel.setText("Skeleton health:  " + map.getSkeleton().getHealth());
     }
+
+        private void setupDbManager() {
+            dbManager = new GameDatabaseManager();
+            try {
+                dbManager.setup();
+            } catch (SQLException ex) {
+                System.out.println("Cannot connect to database.");
+            }
+        }
+
+        private void exit() {
+            try {
+                stop();
+            } catch (Exception e) {
+                System.exit(1);
+            }
+            System.exit(0);
+        }
 }
