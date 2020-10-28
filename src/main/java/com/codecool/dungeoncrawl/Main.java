@@ -1,5 +1,6 @@
 package com.codecool.dungeoncrawl;
 
+import com.codecool.dungeoncrawl.dao.PlayerDaoJdbc;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
@@ -266,6 +267,12 @@ public class Main extends Application {
                     Player player = map.getPlayer();
                     dbManager.savePlayer(player);
                 });
+                break;
+            case L:
+                map.getPlayer().getCell().setActor(null);
+                map.getCell(dbManager.loadPlayer(50).getX(), dbManager.loadPlayer(50).getY()).setActor(map.getPlayer());
+                map.getPlayer().setCell(map.getCell(dbManager.loadPlayer(50).getX(), dbManager.loadPlayer(50).getY()));
+                refresh();
                 break;
 
         }
