@@ -2,16 +2,27 @@ package com.codecool.dungeoncrawl.model;
 
 import com.codecool.dungeoncrawl.logic.actors.Player;
 
+import java.util.List;
+
 public class PlayerModel extends BaseModel {
     private String playerName;
     private int hp;
     private int x;
     private int y;
+    private List<String> inventory;
 
     public PlayerModel(String playerName, int x, int y) {
         this.playerName = playerName;
         this.x = x;
         this.y = y;
+    }
+
+    public List<String> getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(List<String> inventory) {
+        this.inventory = inventory;
     }
 
     public PlayerModel(Player player) {
@@ -20,6 +31,7 @@ public class PlayerModel extends BaseModel {
         this.y = player.getY();
 
         this.hp = player.getHealth();
+        this.inventory = player.getInventory();
 
     }
 

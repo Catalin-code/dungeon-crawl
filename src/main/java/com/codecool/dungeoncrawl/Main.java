@@ -26,6 +26,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import org.w3c.dom.ls.LSOutput;
 
 import java.util.Random;
 import java.sql.SQLException;
@@ -258,8 +259,13 @@ public class Main extends Application {
 
                 }
             case S:
-                Player player = map.getPlayer();
-                dbManager.savePlayer(player);
+                TextInputDialog td = new TextInputDialog("name");
+                td.setTitle("Save Game");
+                td.setHeaderText("Save name");
+                td.showAndWait().ifPresent(name -> {
+                    Player player = map.getPlayer();
+                    dbManager.savePlayer(player);
+                });
                 break;
 
         }
