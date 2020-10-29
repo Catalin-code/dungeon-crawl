@@ -10,8 +10,35 @@ public class PlayerModel extends BaseModel {
     private int x;
     private int y;
     private List<String> inventory;
+    private boolean sword;
+    private boolean key;
+    private boolean door;
 
-    public PlayerModel(String playerName,int hp, int x, int y) {
+    public boolean isSword() {
+        return sword;
+    }
+
+    public void setSword(boolean sword) {
+        this.sword = sword;
+    }
+
+    public boolean isKey() {
+        return key;
+    }
+
+    public void setKey(boolean key) {
+        this.key = key;
+    }
+
+    public boolean isDoor() {
+        return door;
+    }
+
+    public void setDoor(boolean door) {
+        this.door = door;
+    }
+
+    public PlayerModel(String playerName, int hp, int x, int y) {
         this.playerName = playerName;
         this.hp = hp;
         this.x = x;

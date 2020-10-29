@@ -5,6 +5,7 @@ import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.model.PlayerModel;
 import javafx.application.Application;
 import javafx.application.Platform;
 import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
@@ -13,19 +14,20 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
+import javafx.scene.input.*;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.w3c.dom.ls.LSOutput;
 
@@ -269,10 +271,51 @@ public class Main extends Application {
                 });
                 break;
             case L:
-                map.getPlayer().getCell().setActor(null);
-                map.getCell(dbManager.loadPlayer(50).getX(), dbManager.loadPlayer(50).getY()).setActor(map.getPlayer());
-                map.getPlayer().setCell(map.getCell(dbManager.loadPlayer(50).getX(), dbManager.loadPlayer(50).getY()));
-                refresh();
+//                map.getPlayer().getCell().setActor(null);
+//                map.getCell(dbManager.loadPlayer(1).getX(), dbManager.loadPlayer(1).getY()).setActor(map.getPlayer());
+//                map.getPlayer().setCell(map.getCell(dbManager.loadPlayer(1).getX(), dbManager.loadPlayer(1).getY()));
+//                refresh();
+
+                ListView listView = new ListView();
+
+                for(int i = 0; i < dbManager.loadAllPlayers().size(); i++) {
+                    listView.getItems().add(dbManager.loadAllPlayers().get(i).getId());
+                }
+
+
+
+                HBox hbox = new HBox(listView);
+
+
+
+                Scene secondScene = new Scene(hbox, 300, 150);
+
+                // New window (Stage)
+                Stage newWindow = new Stage();
+                newWindow.setTitle("Load menu");
+                newWindow.setScene(secondScene);
+
+                // Specifies the modality for new window.
+                newWindow.initModality(Modality.WINDOW_MODAL);
+
+                newWindow.show();
+
+                listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent click) {
+                        if (click.getClickCount() == 2) {
+                            int currentItem = (int) listView.getSelectionModel().getSelectedItem();
+                            map.getPlayer().getCell().setActor(null);
+                            map.getCell(dbManager.loadPlayer(currentItem).getX(), dbManager.loadPlayer(currentItem).getY()).setActor(map.getPlayer());
+                            map.getPlayer().setCell(map.getCell(dbManager.loadPlayer(currentItem).getX(), dbManager.loadPlayer(currentItem).getY()));
+                            playerHp = dbManager.loadPlayer(currentItem).getHp();
+                            System.out.println(dbManager.loadPlayer(currentItem).isDoor());
+                            newWindow.close();
+                            refresh();
+                        }
+                    }
+                });
+
                 break;
 
         }
