@@ -52,14 +52,14 @@ public class PlayerDaoJdbc implements PlayerDao {
     @Override
     public PlayerModel get(int id) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "SELECT player_name,hp, x, y FROM player WHERE id = ?";
+            String sql = "SELECT player_name,hp, x, y, sword, keys, door FROM player WHERE id = ?";
             PreparedStatement st = conn.prepareStatement(sql);
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
             if (!rs.next()) {
                 return null;
             }
-            PlayerModel model = new PlayerModel(rs.getString(1), rs.getInt(2),rs.getInt(3), rs.getInt(4));
+            PlayerModel model = new PlayerModel(rs.getString(1), rs.getInt(2),rs.getInt(3), rs.getInt(4), rs.getBoolean(5), rs.getBoolean(6), rs.getBoolean(7));
             model.setId(id);
             return model;
         } catch (SQLException e) {
@@ -73,11 +73,11 @@ public class PlayerDaoJdbc implements PlayerDao {
     @Override
     public List<PlayerModel> getAll() {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "SELECT id, player_name, hp, x, y FROM player";
+            String sql = "SELECT id, player_name, hp, x, y, sword, keys, door FROM player";
             ResultSet rs = conn.createStatement().executeQuery(sql);
             List<PlayerModel> result = new ArrayList<>();
             while (rs.next()) {
-                PlayerModel model = new PlayerModel(rs.getString(2), rs.getInt(3), rs.getInt(4), rs.getInt(5));
+                PlayerModel model = new PlayerModel(rs.getString(2), rs.getInt(3), rs.getInt(4), rs.getInt(5), rs.getBoolean(6), rs.getBoolean(7), rs.getBoolean(8));
                 model.setId(rs.getInt(1));
                 result.add(model);
             }

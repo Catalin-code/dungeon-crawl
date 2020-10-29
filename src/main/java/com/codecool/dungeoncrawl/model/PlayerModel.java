@@ -11,7 +11,7 @@ public class PlayerModel extends BaseModel {
     private int y;
     private List<String> inventory;
     private boolean sword;
-    private boolean key;
+    private boolean keys;
     private boolean door;
 
     public boolean isSword() {
@@ -22,12 +22,12 @@ public class PlayerModel extends BaseModel {
         this.sword = sword;
     }
 
-    public boolean isKey() {
-        return key;
+    public boolean isKeys() {
+        return keys;
     }
 
-    public void setKey(boolean key) {
-        this.key = key;
+    public void setKeys(boolean keys) {
+        this.keys = keys;
     }
 
     public boolean isDoor() {
@@ -38,11 +38,14 @@ public class PlayerModel extends BaseModel {
         this.door = door;
     }
 
-    public PlayerModel(String playerName, int hp, int x, int y) {
+    public PlayerModel(String playerName, int hp, int x, int y, boolean sword, boolean keys, boolean door) {
         this.playerName = playerName;
         this.hp = hp;
         this.x = x;
         this.y = y;
+        this.sword = sword;
+        this.keys = keys;
+        this.door = door;
     }
 
     public List<String> getInventory() {
