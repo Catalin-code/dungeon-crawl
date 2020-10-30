@@ -133,7 +133,14 @@ public class Main extends Application {
         pickButton.setOnAction(e -> {
             pickButton.setVisible(false);
             map.getPlayer().addToInventory(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getItem().getName());
+            System.out.println(map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getItem().getName());
             map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).setItem(null);
+            if (map.getPlayer().getInventory().contains("Sword")){
+                map.getPlayer().setSword(true);
+            }
+            if (map.getPlayer().getInventory().contains("Key")){
+                map.getPlayer().setKeys(true);
+            }
             refresh();
         });
     }
@@ -144,6 +151,7 @@ public class Main extends Application {
                 if (map.getCell(map.getPlayer().getX(), map.getPlayer().getY()).getNeighbor(dx, dy).getActor() == map.getSkeleton()){
                     int damageToSkeleton = map.getSkeleton().getHealth() - 50;
                     map.getSkeleton().setHealth(damageToSkeleton);
+                    map.getPlayer().setHealth(playerHp - 10);
                     playerHp = playerHp - 10;
                 }
                 if (map.getSkeleton().getHealth() <= 0){
@@ -271,16 +279,13 @@ public class Main extends Application {
                 });
                 break;
             case L:
-//                map.getPlayer().getCell().setActor(null);
-//                map.getCell(dbManager.loadPlayer(1).getX(), dbManager.loadPlayer(1).getY()).setActor(map.getPlayer());
-//                map.getPlayer().setCell(map.getCell(dbManager.loadPlayer(1).getX(), dbManager.loadPlayer(1).getY()));
-//                refresh();
 
                 ListView listView = new ListView();
 
                 for(int i = 0; i < dbManager.loadAllPlayers().size(); i++) {
                     listView.getItems().add(dbManager.loadAllPlayers().get(i).getId());
                 }
+
 
 
 
@@ -306,18 +311,16 @@ public class Main extends Application {
                         if (click.getClickCount() == 2) {
                             int currentItem = (int) listView.getSelectionModel().getSelectedItem();
                             map.getPlayer().getCell().setActor(null);
+                            map.getPlayer().setInventory(null);
                             map.getCell(dbManager.loadPlayer(currentItem).getX(), dbManager.loadPlayer(currentItem).getY()).setActor(map.getPlayer());
                             map.getPlayer().setCell(map.getCell(dbManager.loadPlayer(currentItem).getX(), dbManager.loadPlayer(currentItem).getY()));
                             playerHp = dbManager.loadPlayer(currentItem).getHp();
-                            System.out.println(dbManager.loadPlayer(currentItem).isDoor());
                             newWindow.close();
                             refresh();
                         }
                     }
                 });
-
                 break;
-
         }
     }
 

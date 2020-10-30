@@ -6,6 +6,10 @@ import java.util.List;
 
 public class Player extends Actor {
     private String name;
+    private List<String> inventory = getInventory();
+    private boolean sword;
+    private boolean keys;
+    private boolean door;
 
     public String getName() {
         return name;
@@ -15,7 +19,30 @@ public class Player extends Actor {
         this.name = name;
     }
 
-    private List<String> inventory = getInventory();
+    public boolean isSword() {
+        return sword;
+    }
+
+    public void setSword(boolean sword) {
+        this.sword = sword;
+    }
+
+    public boolean isKeys() {
+        return keys;
+    }
+
+    public void setKeys(boolean keys) {
+        this.keys = keys;
+    }
+
+    public boolean isDoor() {
+        return door;
+    }
+
+    public void setDoor(boolean door) {
+        this.door = door;
+    }
+
 
     @Override
     public void setInventory(List<String> inventory) {
@@ -26,7 +53,6 @@ public class Player extends Actor {
     public List<String> getInventory() {
         return super.getInventory();
     }
-
 
     private int health = super.getHealth();
 
@@ -53,6 +79,5 @@ public class Player extends Actor {
     public void addToInventory(String item) {
         inventory.add(item);
         setInventory(inventory);
-
     }
 }
